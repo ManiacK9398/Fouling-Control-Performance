@@ -1,0 +1,576 @@
+---
+title: "fouling control"
+output: html_document
+date: "2023-07-25"
+---
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+library(dplyr)
+library(openxlsx)
+library(pheatmap)
+```
+
+set the working directory
+```{r cars}
+#setwd("C:/Users/Nan/Desktop/fouling")
+```
+
+
+
+
+
+```{r}
+# Read the CSV file into the 'data' dataframe
+data <- read.csv("RAW.csv")
+
+```
+
+create the required matrix or performance metric and the corresponding number of samples
+
+```{r}
+perf_act030_sch3760 <- matrix(nrow = length(unique(data$Product.Code)), ncol = length(unique(data$Route.Number)))
+rownames(perf_act030_sch3760) <- sort(unique((data$Product.Code)))
+colnames(perf_act030_sch3760) <- 1:9
+
+perf_act3160_sch3760 <- perf_act030_sch3760
+perf_act6100_sch3760 <- perf_act030_sch3760
+perf_act030_sch036 <- perf_act030_sch3760
+perf_act3160_sch036 <- perf_act030_sch3760
+perf_act6100_sch036 <- perf_act030_sch3760
+num_act030_sch3760 <- perf_act030_sch3760
+num_act3160_sch3760 <- perf_act030_sch3760
+num_act6100_sch3760 <- perf_act030_sch3760
+num_act030_sch036 <- perf_act030_sch3760
+num_act3160_sch036 <- perf_act030_sch3760
+num_act6100_sch036 <- perf_act030_sch3760
+```
+
+##Activity 0-30%; scheme group 0-36
+```{r}
+for (i in 1:9){
+  filtered_data <- data %>%
+    filter(
+      Scheme.Group == "0-36",
+      Activity.Group == "0-30%",
+      Route.Number == i
+    )
+   codee <- unique(filtered_data$Product.Code)
+  for (j in 1:length(codee) ){
+    indexx <- match(codee[j],sort(unique((data$Product.Code))))
+    perf_act030_sch036[indexx,i] <- round(mean(filtered_data[filtered_data$Product.Code==codee[j],]$Performance.Metric),2)
+    num_act030_sch036[indexx,i] <- dim(filtered_data[filtered_data$Product.Code==codee[j],])[1]
+  }
+}
+
+```
+
+##Activity 31-60%; scheme group 0-36
+```{r}
+for (i in 1:9){
+  filtered_data <- data %>%
+    filter(
+      Scheme.Group == "0-36",
+      Activity.Group == "31-60%",
+      Route.Number == i
+    )
+   codee <- unique(filtered_data$Product.Code)
+  for (j in 1:length(codee) ){
+    indexx <- match(codee[j],sort(unique((data$Product.Code))))
+    perf_act3160_sch036[indexx,i] <- round(mean(filtered_data[filtered_data$Product.Code==codee[j],]$Performance.Metric),2)
+    num_act3160_sch036[indexx,i] <- dim(filtered_data[filtered_data$Product.Code==codee[j],])[1]
+  }
+}
+
+
+```
+
+##Activity 61-100%; scheme group 0-36
+```{r}
+for (i in 1:9){
+  filtered_data <- data %>%
+    filter(
+      Scheme.Group == "0-36",
+      Activity.Group == "61-100%",
+      Route.Number == i
+    )
+   codee <- unique(filtered_data$Product.Code)
+  for (j in 1:length(codee) ){
+    indexx <- match(codee[j],sort(unique((data$Product.Code))))
+    perf_act6100_sch036[indexx,i] <- round(mean(filtered_data[filtered_data$Product.Code==codee[j],]$Performance.Metric),2)
+    num_act6100_sch036[indexx,i] <- dim(filtered_data[filtered_data$Product.Code==codee[j],])[1]
+  }
+}
+
+```
+
+##Activity 0-30%; scheme group 37-60
+```{r}
+for (i in 1:9){
+  filtered_data <- data %>%
+    filter(
+      Scheme.Group == "37-60",
+      Activity.Group == "0-30%",
+      Route.Number == i
+    )
+   codee <- unique(filtered_data$Product.Code)
+  for (j in 1:length(codee) ){
+    indexx <- match(codee[j],sort(unique((data$Product.Code))))
+    perf_act030_sch3760[indexx,i] <- round(mean(filtered_data[filtered_data$Product.Code==codee[j],]$Performance.Metric),2)
+    num_act030_sch3760[indexx,i] <- dim(filtered_data[filtered_data$Product.Code==codee[j],])[1]
+  }
+}
+
+```
+
+##Activity 31-60%; scheme group 37-60
+```{r}
+for (i in 1:9){
+  filtered_data <- data %>%
+    filter(
+      Scheme.Group == "37-60",
+      Activity.Group == "31-60%",
+      Route.Number == i
+    )
+   codee <- unique(filtered_data$Product.Code)
+  for (j in 1:length(codee) ){
+    indexx <- match(codee[j],sort(unique((data$Product.Code))))
+    perf_act3160_sch3760[indexx,i] <- round(mean(filtered_data[filtered_data$Product.Code==codee[j],]$Performance.Metric),2)
+    num_act3160_sch3760[indexx,i] <- dim(filtered_data[filtered_data$Product.Code==codee[j],])[1]
+  }
+}
+
+```
+
+#Activity 61-100%; scheme group 37-60
+```{r}
+for (i in 1:9){
+  filtered_data <- data %>%
+    filter(
+      Scheme.Group == "37-60",
+      Activity.Group == "61-100%",
+      Route.Number == i
+    )
+   codee <- unique(filtered_data$Product.Code)
+  for (j in 1:length(codee) ){
+    indexx <- match(codee[j],sort(unique((data$Product.Code))))
+    perf_act6100_sch3760[indexx,i] <- round(mean(filtered_data[filtered_data$Product.Code==codee[j],]$Performance.Metric),2)
+    num_act6100_sch3760[indexx,i] <- dim(filtered_data[filtered_data$Product.Code==codee[j],])[1]
+  }
+}
+
+```
+####extraplotation by activity
+read up data from lower activity to higher activity
+```{r}
+activity <- function(perf1,perf2,num1,num2){
+  for (i in 1:20){
+    for (j in 1:9){
+      if (is.na(perf1[i,j])){
+        perf1[i,j] <- perf2[i,j]
+        num1[i,j] <- num2[i,j]
+      }
+    }
+  }
+  return(list(perf1 = perf1, num1 = num1))
+}
+```
+
+```{r}
+result <- activity(perf_act6100_sch3760,perf_act3160_sch3760,num_act6100_sch3760,num_act3160_sch3760)
+perf_act6100_sch3760 <- result$perf1
+num_act6100_sch3760 <- result$num1
+
+result <- activity(perf_act3160_sch3760,perf_act030_sch3760,num_act3160_sch3760,num_act030_sch3760)
+perf_act3160_sch3760 <- result$perf1
+num_act3160_sch3760 <- result$num1
+
+result <- activity(perf_act6100_sch036,perf_act3160_sch036,num_act6100_sch036,num_act3160_sch036)
+perf_act6100_sch036 <- result$perf1
+num_act6100_sch036 <- result$num1
+
+result <- activity(perf_act3160_sch036,perf_act030_sch036,num_act3160_sch036,num_act030_sch036)
+perf_act3160_sch036 <- result$perf1
+num_act3160_sch036 <- result$num1
+
+
+
+
+
+```
+
+
+
+###by product
+
+```{r}
+##define a matrix to find the minimum perforamnce metric (the best perforamnce metric)
+find_min_row <- function(vec) {
+  min_val <- min(vec, na.rm = TRUE)
+  min_row <- which.min(vec)
+  return(list(min_val = min_val, min_row = min_row))
+}
+```
+
+
+```{r}
+product <- function(perf,num){
+  for (j in 1:9){
+    #a=m
+    if (is.na(perf[1,j])){
+      perf[1,j]=perf[13,j]
+      num[1,j]=num[13,j]
+    }
+    #m=a
+    if (is.na(perf[13,j])){
+      perf[13,j]=perf[1,j]
+      num[13,j]=num[1,j]
+    }
+    ##n>a,m,q
+    if (is.na(perf[14,j])){
+      perct <- mean(data[data$Product.Code=="n",]$Performance.Metric)/
+        (mean(data[data$Product.Code =="a", ]$Performance.Metric)+
+               mean(data[data$Product.Code =="m", ]$Performance.Metric)+
+            mean(data[data$Product.Code =="q", ]$Performance.Metric))
+      values_to_check <- c(perf[1, j], perf[13, j], perf[17, j])
+      if (any(!is.na(values_to_check))) {
+      result <- find_min_row(values_to_check)
+      perf[14, j] <- perct * result$min_val
+      minn <- result$min_row
+      num[14,j] <- num[c(1,13,17)[minn],j]
+      }
+    }
+    #q<n
+    if (is.na(perf[17,j])){
+      perct <- mean(data[data$Product.Code=="q",]$Performance.Metric)/
+        mean(data[data$Product.Code=="n",]$Performance.Metric)
+      if (!is.na(perf[14,j])){
+        perf[17,j] <- perct * perf[14,j]
+        num[17,j] <- perct * num[14,j]
+      }
+    }
+    
+    
+    #i=d,i~b
+    if (is.na(perf[9,j])){
+      if (!is.na(perf[4,j])){
+        perf[9,j]=perf[4,j]
+        num[9,j]=num[4,j]
+      }
+      else{
+        perf[9,j]=perf[2,j]
+        num[9,j]=num[2,j]
+      }
+    }
+    #k>i,d,b
+    if (is.na(perf[11,j])){
+      perct <- mean(data[data$Product.Code=="k",]$Performance.Metric)/
+        (mean(data[data$Product.Code =="i", ]$Performance.Metric)+
+               mean(data[data$Product.Code =="d", ]$Performance.Metric)+
+            mean(data[data$Product.Code =="b", ]$Performance.Metric))
+      values_to_check <- c(perf[2, j], perf[4, j], perf[9, j])
+      if (any(!is.na(values_to_check))) {
+      result <- find_min_row(values_to_check)
+      perf[11, j] <- perct * result$min_val
+      minn <- result$min_row
+      num[11,j] <- num[c(2,4,9)[minn],j]
+      }
+    }
+    
+    
+    #o=f
+    if (is.na(perf[15,j])){
+      perf[15,j]=perf[6,j]
+      num[15,j]=num[6,j]
+    }
+    #f=o
+    if (is.na(perf[6,j])){
+      perf[6,j]=perf[15,j]
+      num[6,j]=num[15,j]
+    }
+    
+    #c=h
+    
+    if (is.na(perf[8,j])){
+      perf[8,j]=perf[3,j]
+      num[8,j]=num[3,j]
+    }
+    
+    #s>p,g
+    if (is.na(perf[19,j])){
+      perct <- mean(data[data$Product.Code=="s",]$Performance.Metric)/
+        (mean(data[data$Product.Code =="p", ]$Performance.Metric)+ 
+        mean(data[data$Product.Code =="g", ]$Performance.Metric))
+      values_to_check <- c(perf[7, j], perf[16, j])
+      if (any(!is.na(values_to_check))) {
+      result <- find_min_row(values_to_check)
+      perf[19, j] <- perct * result$min_val
+      minn <- result$min_row
+      num[19,j] <- num[c(7,16)[minn],j]
+      }
+    }
+    
+  }
+  return(list(perf = perf, num = num))
+}
+```
+
+
+
+
+
+
+```{r}
+result <- product(perf_act030_sch3760,num_act030_sch3760)
+perf_act030_sch3760 <- result$perf
+num_act030_sch3760 <- result$num
+
+result <- product(perf_act3160_sch3760,num_act3160_sch3760)
+perf_act3160_sch3760 <- result$perf
+num_act3160_sch3760 <- result$num
+
+result <- product(perf_act6100_sch3760,num_act6100_sch3760)
+perf_act6100_sch3760 <- result$perf
+num_act6100_sch3760 <- result$num
+
+result <- product(perf_act030_sch036,num_act030_sch036)
+perf_act030_sch036 <- result$perf
+num_act030_sch036 <- result$num
+
+result <- product(perf_act3160_sch036,num_act3160_sch036)
+perf_act3160_sch036 <- result$perf
+num_act3160_sch036 <- result$num
+
+result <- product(perf_act6100_sch036,num_act6100_sch036)
+perf_act6100_sch036 <- result$perf
+num_act6100_sch036 <- result$num
+
+
+
+
+
+```
+
+
+
+###by scheme time
+it is very similar to the way by product
+```{r}
+service <- function(perf1,perf2,num1,num2){
+  for (i in 1:20){
+    for (j in 1:9){
+      if (is.na(perf1[i,j])){
+        perf1[i,j] <- perf2[i,j]
+        num1[i,j] <- num2[i,j]
+      }
+    }
+  }
+  return(list(perf1 = perf1, num1 = num1))
+}
+```
+
+
+```{r}
+result <- service(perf_act030_sch3760,perf_act030_sch036,num_act030_sch3760,num_act030_sch036)
+perf_act030_sch3760 <- result$perf1
+num_act030_sch3760 <- result$num1
+
+result <- service(perf_act3160_sch3760,perf_act3160_sch036,num_act3160_sch3760,num_act3160_sch036)
+perf_act3160_sch3760 <- result$perf1
+num_act3160_sch3760 <- result$num1
+
+result <- service(perf_act6100_sch3760,perf_act6100_sch036,num_act6100_sch3760,num_act6100_sch036)
+perf_act6100_sch3760 <- result$perf1
+num_act6100_sch3760 <- result$num1
+```
+
+
+
+###small sample
+calculate the required samples, we set the error bound as 10 and confidence level at 95%
+```{r}
+sig2 <- var(data$Performance.Metric)
+N <- dim(data)[1]
+B <- 10
+D <- (B/qnorm(0.975))^2
+n <- N*sig2 /((N-1)*D+sig2)
+n
+```
+we need 13 samples in each route for each product to have a 95% confidence error bound to 10 in performance metrics.
+
+###owa function
+```{r}
+owa <- function(n,alpha){
+  w <- array(dim=n)
+  m <-  (1-alpha)/alpha
+  for (i in 1:n){
+    w[i] <- (i/n)^m-((i-1)/n)^m
+  }
+  return(w=w)
+}
+```
+use owa to increase the sample size 
+```{r}
+aim <- c("a", "f", "g", "i", "k", "m", "n", "o", "q", "r", "s")
+small_sample <- function(perf,perf1,perf2,num,num1,num2){
+  for (i in 1:11){
+   for (j in 1:9){
+     indexxx <- match(aim[i], rownames(perf))
+     if (num[indexxx,j]<13){
+      perf[indexxx,j] <- sum(owa(3,0.8)*c(perf[indexxx,j],perf1[indexxx,j],perf2[indexxx,j]))
+      num[indexxx,j] <- num[indexxx,j]+num1[indexxx,j]+num2[indexxx,j]
+    }
+   }
+  }
+  return(list(num=num,perf=perf))
+}
+```
+
+
+
+```{r}
+result <- small_sample(perf = perf_act6100_sch3760, perf1 = perf_act3160_sch3760, perf2 = perf_act6100_sch036, 
+             num = num_act6100_sch3760, num1 = num_act3160_sch3760, num2 = num_act6100_sch036)
+perf_act6100_sch3760 <- result$perf
+num_act6100_sch3760 <- result$num
+
+result <- small_sample(perf = perf_act3160_sch3760, perf1 = perf_act030_sch3760, perf2 = perf_act3160_sch036, 
+             num = num_act3160_sch3760, num1 = num_act030_sch3760 , num2 = num_act3160_sch036)
+perf_act3160_sch3760 <- result$perf
+num_act3160_sch3760 <- result$num
+```
+
+
+```{r}
+sma_samp <- function(perf,perf1,num,num1){
+  for (i in 1:11){
+   for (j in 1:9){
+     indexxx <- match(aim[i], rownames(perf))
+     if (num[indexxx,j]<13){
+      perf[indexxx,j] <- sum(owa(2,0.9)*c(perf[indexxx,j],perf1[indexxx,j]))
+      num[indexxx,j] <- num[indexxx,j]+num1[indexxx,j]
+    }
+   }
+  }
+  return(list(num=num,perf=perf))
+}
+```
+
+
+
+```{r}
+result <- sma_samp(perf = perf_act030_sch3760, perf1 = perf_act030_sch036, 
+             num = num_act030_sch3760, num1 = num_act030_sch036)
+perf_act030_sch3760 <- result$perf
+num_act030_sch3760 <- result$num
+```
+
+
+
+### heatmap for the perforamnce metric
+activity 0-30 scheme 37-60
+```{r}
+# Set the color gradient from red to green
+col_fun <- colorRampPalette(c("red","white","blue"))
+
+# Create the heatmap plot
+pheatmap(as.matrix(perf_act030_sch3760[aim,]), color = col_fun(100), scale = "none",cluster_rows = FALSE, cluster_cols = FALSE   )
+
+```
+
+
+activity 31-60 scheme 37-60
+
+```{r}
+
+
+col_fun <- colorRampPalette(c("red","white","blue"))
+
+# Create the heatmap plot
+pheatmap(as.matrix(perf_act3160_sch3760[aim,]), color = col_fun(100), scale = "none",cluster_rows = FALSE, cluster_cols = FALSE)
+```
+
+activity 61-100 scheme 37-60
+```{r}
+col_fun <- colorRampPalette(c("red","white","blue"))
+
+# Create the heatmap plot
+pheatmap(as.matrix(perf_act6100_sch3760[aim,]), color = col_fun(100), scale = "none",cluster_rows = FALSE, cluster_cols = FALSE)
+```
+
+
+
+###calculate the error bound and make heatmap again
+```{r}
+error_bound <- function(num){
+  sig2 <- var(data$Performance.Metric)
+  N <- dim(data)[1]
+  n <- num
+  D <- ((N/n-1)*sig2)/(N-1)
+  B <- qnorm(0.975)*sqrt(D)
+  return(error=B)
+}
+```
+
+```{r}
+result <- error_bound(num_act030_sch3760[aim,])#
+error_act030_sch3760 <- result
+
+result <- error_bound(num_act3160_sch3760[aim,])#
+error_act3160_sch3760 <- result
+
+result <- error_bound(num_act6100_sch3760[aim,])#
+error_act6100_sch3760 <- result
+```
+
+
+activity 0-30 scheme 37-60
+```{r}
+col_fun <- colorRampPalette(c("red","white","blue"))
+
+# Create the heatmap plot
+pheatmap(as.matrix(error_act030_sch3760), color = col_fun(20), scale = "none",cluster_rows = FALSE, cluster_cols = FALSE)
+
+```
+activity 31-60 scheme 37-60
+```{r}
+col_fun <- colorRampPalette(c("red","white","blue"))
+
+# Create the heatmap plot
+pheatmap(as.matrix(error_act3160_sch3760), color = col_fun(20), scale = "none",cluster_rows = FALSE, cluster_cols = FALSE)
+```
+
+activity 61-100 scheme  37-60
+
+```{r}
+col_fun <- colorRampPalette(c("red","white","blue"))
+
+# Create the heatmap plot
+pheatmap(as.matrix(error_act6100_sch3760), color = col_fun(20), scale = "none",cluster_rows = FALSE, cluster_cols = FALSE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
